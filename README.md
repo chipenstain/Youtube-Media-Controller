@@ -7,7 +7,7 @@ work with standard and shorts videos.
 
 - Play/Pause - Play & Pause video
 - Next Track - Next video
-- Previous Track - Prev video
+- Previous Track - Prev video / Go to begin like YT logic
 
 ## Setup
 1. Go to `edge://extensions`

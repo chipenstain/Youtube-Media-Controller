@@ -1,6 +1,3 @@
-let prevCmdPressCount = 0;
-let prevHandler = null;
-
 chrome.commands.onCommand.addListener(async (command) => {
     const tabs = await chrome.tabs.query({ url: "*://www.youtube.com/*" });
     if (tabs.length) {
@@ -20,23 +17,10 @@ chrome.commands.onCommand.addListener(async (command) => {
                 });
                 break;
             case "prev-track":
-                prevCmdPressCount++;
-
-                if (prevCmdPressCount === 1) {
-                    prevHandler = setTimeout(() => {
-                        prevCmdPressCount = 0;
-                        chrome.scripting.executeScript({
-                            target: {tabId: tab},
-                            func: goToBegin
-                        });
-                    }, 100);
-                } else {
-                    clearTimeout(prevHandler);
-                    chrome.scripting.executeScript({
-                        target: {tabId: tab},
-                        func: prevTrack
-                    });
-                }
+                chrome.scripting.executeScript({
+                    target: {tabId: tab},
+                    func: prevTrack
+                });
                 break;
             default:
                 break;
@@ -45,35 +29,32 @@ chrome.commands.onCommand.addListener(async (command) => {
 });
 
 function playPause() {
-    const video = document.querySelector("video");
-    if (video)
-    {
-        video.paused ? video.play() : video.pause();
-    } else {
-        // Youtube Shorts
-        const shortsPlayButton = document.querySelector("button[aria-label='Play'], button[aria-label='Pause']");
+    if (location.pathname.startsWith("/shorts/")) {
+        const shortsPlayButton = document.querySelector("#play-pause-button-shape button");
         shortsPlayButton?.click();
+    } else {
+        const video = document.querySelector("#ytd-player video");
+        if (video)
+        {
+            video.paused ? video.play() : video.pause();
+        }
     }
 }
 
 function nextTrack() {
-    const nextButton = document.querySelector(".ytp-next-button") || document.querySelector("button[aria-label='Next']");
+    if (location.pathname.startsWith("/shorts/")) {
+        const nextButton = document.querySelector("#navigation-button-down button");
+        nextButton?.click();
+    }
+    const nextButton = document.querySelector(".ytp-next-button");
     nextButton?.click();
 }
 
 function prevTrack() {
-    const prevButton = document.querySelector(".ytp-prev-button") || document.querySelector("button[aria-label='Previous']");
-    prevButton?.click();
-}
-
-function goToBegin(){
     if (location.pathname.startsWith("/shorts/")) {
-        prevTrack();
+        const prevButton = document.querySelector("#navigation-button-up button");
+        prevButton?.click();
     }
-
-    const video = document.querySelector("video");
-    if (video)
-    {
-        video.currentTime = 0;
-    }
+    const prevButton = document.querySelector(".ytp-prev-button");
+    prevButton?.click();
 }
