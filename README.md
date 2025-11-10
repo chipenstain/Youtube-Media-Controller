@@ -1,7 +1,7 @@
 # YouTube Media Key Controller
 
 This extension for Google Chrome & MS Edge allow you use media keys to control YouTube tabs.
-work with standard and shorts videos.
+Work with standard and shorts videos.
 
 ## Controls:
 
